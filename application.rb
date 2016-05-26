@@ -28,7 +28,11 @@ class App < Sinatra::Base
 	end
 	
 	get '/' do
-		@today = Date.today
 		slim :index
 	end
+
+	get '/join' do
+		slim :join
+	end
+
 end

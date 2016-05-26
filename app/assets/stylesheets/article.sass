@@ -1,0 +1,42 @@
+$header-height: 80px
+$footer-height: 80px
+
+article
+	position: absolute
+	top: 0
+	left: 50%
+	width: 100%
+	max-width: 500px
+	height: 100%
+	transform: translateX(-50%)
+
+	> header
+		position: absolute
+		top: 0
+		left: 0
+		width: 100%
+		height: $header-height
+		border-bottom: 1px solid white
+
+	> section
+		position: absolute
+		top: $header-height
+		left: 0
+		width: 100%
+		height: calc(100% - #{$header-height + $footer-height})
+
+		> .content
+			position: absolute
+			top: 50%
+			left: 0
+			width: 100%
+			text-align: center
+			transform: translateY(-50%)
+
+	> footer
+		position: absolute
+		bottom: 0
+		left: 0
+		width: 100%
+		height: $footer-height
+		border-top: 1px solid white
