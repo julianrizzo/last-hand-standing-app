@@ -1,20 +1,3 @@
 h1
 	= @code
 	= @id
-
-
-javascript:
-	$(document).ready(function() {
-
-		var socket = new WebSocket('ws://' + window.location.host + '/communicate');
-
-		socket.onmessage = function(message) {
-			alert(message.data);
-		}
-
-		socket.onopen = function() {
-			socket.send("hiiii");
-		}
-
-
-	});

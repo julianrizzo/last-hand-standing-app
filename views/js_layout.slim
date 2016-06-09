@@ -1,0 +1,11 @@
+- guid = SecureRandom.uuid
+
+div id="#{guid}"
+
+	== yield
+
+- if @init_function
+	javascript:
+		$(document).ready(function(){
+			#{@init_function}($("\##{guid}"));
+		});

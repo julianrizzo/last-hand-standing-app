@@ -13,4 +13,5 @@ html
 		== javascript_tag 'application', :expand => true
 
 	body
-		== yield
+		== slim :js_layout, layout: false do
+			== yield

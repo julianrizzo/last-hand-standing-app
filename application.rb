@@ -52,6 +52,7 @@ class App < Sinatra::Base
 	get '/game/:code/:id' do |code, id|
 		@code = code
 		@id = id
+		@init_function = "InitialiseGame"
 		slim :game
 	end
 
