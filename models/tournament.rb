@@ -6,7 +6,6 @@ class Tournament
     @code = code
 
     @players = []
-
   end
 
   def get_code
@@ -18,9 +17,11 @@ class Tournament
   end
 
   def add_player(name)
-    player = Player.new(name)
+    player = Player.new(name, @players.count)
 
     @players.push(player)
+
+    return player.get_id
   end
 
 end

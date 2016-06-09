@@ -4,6 +4,7 @@ require 'sinatra/asset_pipeline'
 require 'sinatra/activerecord'
 require 'sinatra/reloader'
 require 'sinatra/base'
+require 'sinatra-websocket'
 require 'sass'
 require 'slim'
 
@@ -18,11 +19,11 @@ class App < Sinatra::Base
 	set :tournaments, []
 
 	register Sinatra::AssetPipeline
-	
+
 	configure :development do
 		register Sinatra::Reloader
 	end
-	
+
 	get '/' do
 		slim :index
 	end
@@ -41,16 +42,37 @@ class App < Sinatra::Base
 		name = params["name"]
 
 		new_tournament = Tournament.new(code)
-		new_tournament.add_player(name)
+		id = new_tournament.add_player(name)
 
 		settings.tournaments.push(new_tournament)
 
-		redirect "/game/#{code}"
+		redirect "/game/#{code}/#{id}"
 	end
 
-	get '/game/:code' do |code|
+	get '/game/:code/:id' do |code, id|
 		@code = code
+		@id = id
 		slim :game
+	end
+
+	get '/communicate' do
+		if request.websocket?
+
+			request.websocket do |ws|
+				ws.onopen do
+					puts "someone has connected"
+					ws.send("Hello World!")
+				end
+				ws.onmessage do |msg|
+					#EM.next_tick { settings.sockets.each{|s| s.send(msg) } }
+					EM.next_tick { ws.send(msg) }
+				end
+				ws.onclose do
+					warn("websocket closed")
+				end
+			end
+
+		end
 	end
 
 end

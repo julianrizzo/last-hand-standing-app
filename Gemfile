@@ -20,6 +20,8 @@ gem 'slim', '3.0.6'
 
 gem 'sinatra-activerecord', '2.0.9'
 
+gem 'sinatra-websocket', '0.3.1'
+
 group :development, :test do
 	gem 'sqlite3', '1.3.11'
 end
