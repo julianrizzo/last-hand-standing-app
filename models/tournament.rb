@@ -16,6 +16,10 @@ class Tournament
     return @players
   end
 
+  def get_players_with_sockets
+    return @players.select { |p| !p.get_socket.nil? }
+  end
+
   def add_player(name)
     player = Player.new(name, @players.count)
 

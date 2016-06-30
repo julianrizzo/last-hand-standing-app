@@ -9,6 +9,7 @@ require 'sass'
 require 'slim'
 
 require_relative 'models/tournament'
+require_relative 'models/message'
 
 class App < Sinatra::Base
 
@@ -42,16 +43,28 @@ class App < Sinatra::Base
 		name = params["name"]
 
 		new_tournament = Tournament.new(code)
-		id = new_tournament.add_player(name)
+		player_id = new_tournament.add_player(name)
 
 		settings.tournaments.push(new_tournament)
 
-		redirect "/game/#{code}/#{id}"
+		redirect "/game/#{code}/#{player_id}"
 	end
 
-	get '/game/:code/:id' do |code, id|
+	post '/join' do
+
+		code = params["code"]
+		name = params["name"]
+
+		tournament = find_tournament(code)
+
+		player_id = tournament.add_player(name)
+
+		redirect "/game/#{code}/#{player_id}"
+	end
+
+	get '/game/:code/:player_id' do |code, player_id|
 		@code = code
-		@id = id
+		@id = player_id
 		@init_function = "InitialiseGame"
 		slim :game
 	end
@@ -62,11 +75,19 @@ class App < Sinatra::Base
 			request.websocket do |ws|
 				ws.onopen do
 					puts "someone has connected"
-					ws.send("Hello World!")
 				end
 				ws.onmessage do |msg|
-					#EM.next_tick { settings.sockets.each{|s| s.send(msg) } }
-					EM.next_tick { ws.send(msg) }
+
+					message = Message.new(msg)
+					tournament = find_tournament(message.get_code)
+					player = find_player_in_tournament(tournament, message.get_player_id)
+
+					if message.get_action == 'init'
+						player.add_socket(ws)
+
+						lobby = slim :"screens/lobby", locals: { players: tournament.get_players_with_sockets }, layout: false
+						send_all_players_message(tournament, lobby)
+					end
 				end
 				ws.onclose do
 					warn("websocket closed")
@@ -74,6 +95,35 @@ class App < Sinatra::Base
 			end
 
 		end
+	end
+
+	def find_tournament(code)
+		tours = settings.tournaments.select { |t| t.get_code == code }
+		if tours.length > 0
+			return tours[0]
+		end
+
+		return nil
+	end
+
+	def find_player_in_tournament(tournament, player_id)
+		players = tournament.get_players.select { |p| p.get_id == player_id }
+		if players.length > 0
+			return players[0]
+		end
+
+		return nil
+	end
+
+	def send_all_players_message(tournament, message)
+
+		tournament.get_players.each do |player|
+			if !player.get_socket.nil?
+
+				EM.next_tick { player.get_socket.send(message) }
+			end
+		end
+
 	end
 
 end
