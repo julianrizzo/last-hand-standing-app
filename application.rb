@@ -1,7 +1,6 @@
 require 'sinatra'
 require 'sinatra/json'
 require 'sinatra/asset_pipeline'
-require 'sinatra/activerecord'
 require 'sinatra/reloader'
 require 'sinatra/base'
 require 'sinatra-websocket'
