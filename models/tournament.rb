@@ -21,7 +21,12 @@ class Tournament
   end
 
   def add_player(name)
-    player = Player.new(name, @players.count)
+
+    ids = get_players.map { |p| p.get_id }
+
+    id = ids.length > 0 ? ids.max + 1 : 0
+
+    player = Player.new(name, id)
 
     @players.push(player)
 
