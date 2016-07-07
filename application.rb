@@ -30,10 +30,12 @@ class App < Sinatra::Base
 	end
 
 	get '/join' do
+		@init_function = "InitialiseJoin"
 		slim :join
 	end
 
 	get '/create' do
+		@init_function = "InitialiseCreate"
 		slim :create
 	end
 

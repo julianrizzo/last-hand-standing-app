@@ -1,21 +1,4 @@
-/h1
-/	| Last Hand Standing!
-/
-/br
-/br
-/
-/button
-/	i class="fa fa-plus"
-/	| New
-/
-/button
-/	i class="fa fa-users"
-/	| Join
-/
-/br
-/
-
-
+- icon = ['fa-hand-paper-o', 'fa-hand-scissors-o', 'fa-hand-rock-o'].sample
 
 article
 	header
@@ -23,29 +6,13 @@ article
 			| Last Hand Standing!
 
 	section
+		i class="fa #{icon} fancy-display"
+
+	footer
 		a href="/create" class="button"
 			i class="fa fa-plus"
 			| New
 
-		span OR
-
 		a href="/join" class="button"
 			i class="fa fa-users"
 			| Join
-
-
-	footer
-		/button class="icon-only"
-		/	i class="fa fa-hand-paper-o"
-		/
-		/button class="icon-only"
-		/	i class="fa fa-hand-scissors-o"
-		/
-		/button class="icon-only"
-		/	i class="fa fa-hand-rock-o"
-		/
-		/button class="icon-only"
-		/	i class="fa fa-hand-lizard-o"
-		/
-		/button class="icon-only"
-		/	i class="fa fa-hand-spock-o"

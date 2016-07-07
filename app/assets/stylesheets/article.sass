@@ -1,38 +1,56 @@
-$header-height: 80px
-$footer-height: 80px
+@import "_vars"
 
 article
 	position: absolute
 	top: 0
-	left: 50%
+	left: 0
 	width: 100%
-	max-width: 500px
 	height: 100%
-	transform: translateX(-50%)
+	display: flex
+	flex-direction: column
 
 	> header
-		position: absolute
-		top: 0
-		left: 0
 		width: 100%
 		height: $header-height
-		border-bottom: 1px solid white
+		line-height: $header-height
+		flex-grow: 0
 
 	> section
-		position: absolute
-		top: $header-height
-		left: 0
 		width: 100%
-		height: calc(100% - #{$header-height + $footer-height})
+		flex-grow: 1
 		display: flex
-		flex-direction: column
-		justify-content: center
 		align-items: center
+		justify-content: center
 
 	> footer
-		position: absolute
-		bottom: 0
-		left: 0
 		width: 100%
 		height: $footer-height
-		border-top: 1px solid white
+		flex-grow: 0
+		display: flex
+		align-content: stretch
+
+		.button
+			height: $footer-height
+			line-height: $footer-height
+			font-size: 2em
+			color: $colour-button-secondary
+			background: white
+			text-decoration: none
+			flex-grow: 1
+			cursor: pointer
+			transition: transform 0.1s
+
+			outline: 0
+			border: 0
+			margin: 0
+			padding: 0
+
+			&:nth-child(2)
+				margin-left: 2px
+				color: $colour-button-secondary
+
+			&:active
+				transform: scale(0.9)
+
+			> i
+				margin-right: $standard-margin

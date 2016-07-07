@@ -4,11 +4,11 @@ article
 			| Join a tournament!
 
 	section
-		form action="/join" method="POST"
+		form action="/join" method="POST" id="joinform"
 			input type="text" maxlength=4 placeholder="CODE" name="code"
 			input type="text" maxlength=12 placeholder="NAME" name="name"
 
-			button type="submit"
-				i class="fa fa-check"
-				| Join
 	footer
+		button type="submit" class="button" id="joinbutton"
+			i class="fa fa-check"
+			| Join
