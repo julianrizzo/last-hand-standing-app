@@ -6,13 +6,13 @@ html
 
 		meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"
 
-		== stylesheet_tag 'vendor', :expand => true
-		== stylesheet_tag 'application', :expand => true
+		== stylesheet_tag 'vendor'
+		== stylesheet_tag 'application'
 
 		link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet"
 
-		== javascript_tag 'vendor', :expand => true
-		== javascript_tag 'application', :expand => true
+		== javascript_tag 'vendor'
+		== javascript_tag 'application'
 
 	body
 		== slim :js_layout, layout: false do
