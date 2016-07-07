@@ -87,7 +87,7 @@ class App < Sinatra::Base
 					if message.get_action == 'init'
 						player.add_socket(ws)
 
-						lobby = slim :"screens/lobby", locals: { players: tournament.get_players_with_sockets }, layout: false
+						lobby = slim :"screens/lobby", locals: { players: tournament.get_players_with_sockets, code: tournament.get_code }, layout: false
 						send_all_players_message(tournament, lobby)
 					end
 				end

@@ -1,4 +1,19 @@
-ul
-	- players.each do |player|
-		li
-			= player.get_name
+
+article
+	header
+		h1
+			| Lobby
+
+	section
+
+		b #{code}
+
+		ul
+			- players.each do |player|
+				li
+					= player.get_name
+
+	footer
+		button class="button"
+			i class="fa fa-play"
+			| Play
