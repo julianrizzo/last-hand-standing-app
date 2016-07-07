@@ -17,6 +17,8 @@ class App < Sinatra::Base
 	set :public_folder, File.dirname(__FILE__) + '/public/'
 	set :assets_prefix, %w(app/assets vendor/assets)
 
+	set :assets_precompile, %w(application.js application.css vendor.js vendor.css *.png *.jpg *.svg *.eot *.ttf *.woff)
+
 	set :tournaments, []
 
 	register Sinatra::AssetPipeline
