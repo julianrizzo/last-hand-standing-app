@@ -1,3 +1,5 @@
+@import "_vars"
+
 $fancy-icon-size: 180px
 
 $shadow: 2px 2px 4px rgba(0,0,0,0.4)
@@ -16,9 +18,21 @@ h1
 	margin: 0
 	text-transform: uppercase
 	text-shadow: 1px 2px 4px rgba(0,0,0,0.4)
+	width: 100%
+	margin-bottom: 10px
+
+ul
+	padding: 0
+
+	li
+		list-style: none
+		padding: $standard-margin / 2 0
+
+.padded
+	padding: 0 $standard-margin
 
 i.fancy-display
-	font-size: 12em
+	font-size: 120px
 	width: $fancy-icon-size
 	height: $fancy-icon-size
 	line-height: $fancy-icon-size
