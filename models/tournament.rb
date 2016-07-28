@@ -33,4 +33,8 @@ class Tournament
     return player.get_id
   end
 
+  def delete_player(player)
+    @players.delete(player)
+  end
+
 end

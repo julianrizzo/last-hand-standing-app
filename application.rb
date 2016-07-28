@@ -97,28 +97,31 @@ class App < Sinatra::Base
 		slim :game
 	end
 
-	get '/communicate' do
+	get '/communicate/:code/:player_id' do |code, player_id|
 		if request.websocket?
+
+			tournament = find_tournament(code)
+			player = find_player_in_tournament(tournament, player_id.to_i)
 
 			request.websocket do |ws|
 				ws.onopen do
 					puts "someone has connected"
+
+					player.add_socket(ws)
+
+					lobby = slim :"screens/lobby", locals: { players: tournament.get_players_with_sockets, code: tournament.get_code }, layout: false
+					send_all_players_message(tournament, lobby)
 				end
 				ws.onmessage do |msg|
 
-					message = Message.new(msg)
-					tournament = find_tournament(message.get_code)
-					player = find_player_in_tournament(tournament, message.get_player_id)
-
-					if message.get_action == 'init'
-						player.add_socket(ws)
-
-						lobby = slim :"screens/lobby", locals: { players: tournament.get_players_with_sockets, code: tournament.get_code }, layout: false
-						send_all_players_message(tournament, lobby)
-					end
 				end
 				ws.onclose do
 					warn("websocket closed")
+
+					tournament.delete_player(player)
+
+					lobby = slim :"screens/lobby", locals: { players: tournament.get_players_with_sockets, code: tournament.get_code }, layout: false
+					send_all_players_message(tournament, lobby)
 				end
 			end
 
