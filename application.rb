@@ -49,17 +49,18 @@ class App < Sinatra::Base
 		code = params["code"]
 		name = params["name"]
 
-		if name.nil? || name.empty?
+		if is_blank(name)
 			flash[:error] = "Please state your name"
 			redirect '/create'
-		else
-			new_tournament = Tournament.new(code)
-			player_id = new_tournament.add_player(name)
-
-			settings.tournaments.push(new_tournament)
-
-			redirect "/game/#{code}/#{player_id}"
 		end
+
+		new_tournament = Tournament.new(code)
+		player_id = new_tournament.add_player(name)
+
+		settings.tournaments.push(new_tournament)
+
+		redirect "/game/#{code}/#{player_id}"
+
 	end
 
 	post '/join' do
@@ -67,7 +68,22 @@ class App < Sinatra::Base
 		code = params["code"]
 		name = params["name"]
 
+		if is_blank(name)
+			flash[:error] = "Please state your name"
+			redirect '/join'
+		end
+
+		if is_blank(code)
+			flash[:error] = "Please enter a code"
+			redirect '/join'
+		end
+
 		tournament = find_tournament(code)
+
+		if tournament.nil?
+			flash[:error] = "Tournament not found"
+			redirect '/join'
+		end
 
 		player_id = tournament.add_player(name)
 
@@ -107,6 +123,10 @@ class App < Sinatra::Base
 			end
 
 		end
+	end
+
+	def is_blank(thing)
+		return thing.nil? || thing.empty?
 	end
 
 	def find_tournament(code)
