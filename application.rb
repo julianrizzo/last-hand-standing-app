@@ -4,6 +4,7 @@ require 'sinatra/asset_pipeline'
 require 'sinatra/reloader'
 require 'sinatra/base'
 require 'sinatra-websocket'
+require 'sinatra/flash'
 require 'sass'
 require 'slim'
 
@@ -20,7 +21,10 @@ class App < Sinatra::Base
 
 	set :tournaments, []
 
+	enable :sessions
+
 	register Sinatra::AssetPipeline
+	register Sinatra::Flash
 
 	configure :development do
 		register Sinatra::Reloader
@@ -45,12 +49,17 @@ class App < Sinatra::Base
 		code = params["code"]
 		name = params["name"]
 
-		new_tournament = Tournament.new(code)
-		player_id = new_tournament.add_player(name)
+		if name.nil? || name.empty?
+			flash[:error] = "Please state your name"
+			redirect '/create'
+		else
+			new_tournament = Tournament.new(code)
+			player_id = new_tournament.add_player(name)
 
-		settings.tournaments.push(new_tournament)
+			settings.tournaments.push(new_tournament)
 
-		redirect "/game/#{code}/#{player_id}"
+			redirect "/game/#{code}/#{player_id}"
+		end
 	end
 
 	post '/join' do
