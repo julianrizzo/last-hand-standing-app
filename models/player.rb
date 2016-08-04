@@ -5,6 +5,8 @@ class Player
     @id = id
 
     @colour = ["#ff7473", "#ede574", "#79bd9a", "#A593E0"].sample
+
+    @has_lost = false
   end
 
   def get_name
@@ -25,6 +27,14 @@ class Player
 
   def add_socket(socket)
     @socket = socket
+  end
+
+  def has_lost
+    return @has_lost
+  end
+
+  def set_lost
+    @has_lost = true
   end
 
 end

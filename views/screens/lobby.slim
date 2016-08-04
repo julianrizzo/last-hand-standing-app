@@ -18,6 +18,11 @@ article
 					= player.get_name
 
 	footer
-		button class="button"
+		button class="button ui-play"
 			i class="fa fa-play"
 			| Play
+
+javascript:
+	$(".ui-play").click(function() {
+		socket.send("play");
+	});

@@ -1,4 +1,5 @@
 require_relative 'player'
+require_relative 'opponents'
 
 class Tournament
 
@@ -35,6 +36,37 @@ class Tournament
 
   def delete_player(player)
     @players.delete(player)
+  end
+
+  def is_ready
+    return @players.length % 2 == 0
+  end
+
+
+  def get_surviving_players
+    return @players.select { |p| !p.has_lost }
+  end
+
+  def get_opposing_player_pairs
+
+    opponents = []
+    players = get_surviving_players
+
+    if players.length % 2 == 0
+
+      while players.length > 0
+
+        players = players.shuffle
+        player_1  = players.pop
+
+        players = players.shuffle
+        player_2  = players.pop
+
+        opponents.push(Opponents.new(player_1, player_2))
+      end
+    end
+
+    return opponents
   end
 
 end

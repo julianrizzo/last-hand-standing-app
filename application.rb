@@ -9,7 +9,6 @@ require 'sass'
 require 'slim'
 
 require_relative 'models/tournament'
-require_relative 'models/message'
 
 class App < Sinatra::Base
 
@@ -109,19 +108,26 @@ class App < Sinatra::Base
 
 					player.add_socket(ws)
 
-					lobby = slim :"screens/lobby", locals: { players: tournament.get_players_with_sockets, code: tournament.get_code }, layout: false
-					send_all_players_message(tournament, lobby)
+					send_all_players_message(tournament, show_lobby(tournament))
 				end
 				ws.onmessage do |msg|
+					if msg == 'play'
+						if tournament.is_ready
+							players = tournament.get_opposing_player_pairs
 
+							players.each do |opponents|
+								show_player_match(opponents.get_player_1, opponents.get_player_2)
+								show_player_match(opponents.get_player_2, opponents.get_player_1)
+							end
+						end
+					end
 				end
 				ws.onclose do
 					warn("websocket closed")
 
 					tournament.delete_player(player)
 
-					lobby = slim :"screens/lobby", locals: { players: tournament.get_players_with_sockets, code: tournament.get_code }, layout: false
-					send_all_players_message(tournament, lobby)
+					send_all_players_message(tournament, show_lobby(tournament))
 				end
 			end
 
@@ -159,6 +165,16 @@ class App < Sinatra::Base
 			end
 		end
 
+	end
+
+	def show_lobby(tournament)
+		return slim :"screens/lobby", locals: { players: tournament.get_players_with_sockets, code: tournament.get_code }, layout: false
+	end
+
+	def show_player_match(player, opponent)
+		match = slim :"screens/match", locals: { player: player, opponent: opponent }, layout: false
+
+		EM.next_tick { player.get_socket.send(match) }
 	end
 
 end
