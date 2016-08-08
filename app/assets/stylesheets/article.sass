@@ -1,16 +1,13 @@
 @import "_vars"
 
 article
-	position: absolute
-	top: 0
-	left: 50%
+	position: relative
 	width: 100%
-	height: 100%
+	max-width: $article-max-width
+	height: 100vh
+	margin: 0 auto
 	display: flex
 	flex-direction: column
-
-	max-width: $article-max-width
-	transform: translateX(-50%)
 
 	> header
 		width: 100%

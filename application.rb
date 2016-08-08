@@ -168,7 +168,13 @@ class App < Sinatra::Base
 	end
 
 	def show_lobby(tournament)
-		return slim :"screens/lobby", locals: { players: tournament.get_players_with_sockets, code: tournament.get_code }, layout: false
+		locals = {
+			players: tournament.get_players_with_sockets, 
+			code: tournament.get_code,
+			init_function: "InitialiseLobby"
+		}
+
+		return slim :"screens/lobby", locals: locals, layout: :js_layout
 	end
 
 	def show_player_match(player, opponent)
