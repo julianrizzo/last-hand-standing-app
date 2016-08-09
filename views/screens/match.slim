@@ -7,45 +7,10 @@ article
 
 	section data-default="rock"
 
-		h1 #{player.get_name}
-
-
 		i class="fa fa-hand-rock-o"
 		i class="fa fa-hand-paper-o"
 		i class="fa fa-hand-scissors-o"
 
 	footer
-		span class="ui-countdown"
-
-javascript:
-
-	var $countdown = $(".ui-countdown");
-
-	$(function () {
-		var $countdown = $(".ui-countdown");
-
-		var currentSeconds = 10;
-		var currentMilliSeconds = 0;
-
-		var timer = setInterval(function () {
-
-			if (currentSeconds > 0) {
-				currentMilliSeconds--;
-
-				if (currentMilliSeconds <= 0) {
-					currentMilliSeconds = 60;
-					currentSeconds--;
-				}
-
-				var milli = currentMilliSeconds < 10 ? "0" + currentMilliSeconds : currentMilliSeconds;
-
-				$countdown.text(currentSeconds + ":" + milli + " seconds");
-			} else {
-				clearInterval(timer);
-				$countdown.text("done mother fucker");
-			}
-
-		}, 10);
-
-
-	});
+		span class="ui-countdown countdown"
+		

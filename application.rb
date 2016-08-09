@@ -178,9 +178,27 @@ class App < Sinatra::Base
 	end
 
 	def show_player_match(player, opponent)
-		match = slim :"screens/match", locals: { player: player, opponent: opponent }, layout: false
+		locals = {
+			player: player,
+			opponent: opponent,
+			init_function: "InitialiseMatch"
+		}
+
+		match = slim :"screens/match", locals: locals, layout: :js_layout
 
 		EM.next_tick { player.get_socket.send(match) }
+	end
+
+	get '/testmatch' do
+		locals = {
+			player: Player.new('james', 0),
+			opponent: Player.new('julian', 1),
+			init_function: "InitialiseMatch"
+		}
+
+		match = slim :"screens/match", locals: locals, layout: :js_layout
+
+		slim :game, locals: { screen: match }
 	end
 
 end
