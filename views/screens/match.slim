@@ -1,3 +1,5 @@
+- options = ['rock', 'paper', 'scissors'].shuffle
+
 article
 	header
 		h1
@@ -5,11 +7,12 @@ article
 		span
 			| You are versing #{opponent.get_name}
 
-	section data-default="rock"
+	section data-default="#{options.sample}"
 
-		i class="fa fa-hand-rock-o"
-		i class="fa fa-hand-paper-o"
-		i class="fa fa-hand-scissors-o"
+		- options.each do |option|
+			span
+				= option
+			i class="fa fa-hand-#{option}-o select-icon" data-option="#{option}"
 
 	footer
 		span class="ui-countdown countdown"

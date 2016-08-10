@@ -1,8 +1,7 @@
 @import "_vars"
+@import "_mixins"
 
 $fancy-icon-size: 180px
-
-$shadow: 2px 2px 4px rgba(0,0,0,0.4)
 
 body
 	font-family: 'Raleway', sans-serif
@@ -32,24 +31,14 @@ ul
 	padding: 0 $standard-margin
 
 i.fancy-display
-	font-size: 120px
-	width: $fancy-icon-size
-	height: $fancy-icon-size
-	line-height: $fancy-icon-size
-	border-radius: 50%
-	border: 10px solid black
 	color: black
-	animation-name: spins
-	animation-duration: 10s
-	animation-iteration-count: infinite
-	animation-timing-function: linear
+	border: 10px solid black
 	box-shadow: $shadow
 	text-shadow: $shadow
+	+rotating-icon($fancy-icon-size)
 
-
-
-	@keyframes spins
-		0%
-			transform: rotate(0deg)
-		100%
-			transform: rotate(360deg)
+@keyframes spins
+	0%
+		transform: rotate(0deg)
+	100%
+		transform: rotate(360deg)
