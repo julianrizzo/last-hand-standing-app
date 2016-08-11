@@ -150,13 +150,13 @@ class App < Sinatra::Base
 							else
 								did_win = did_player_win(player.get_current_choice, opponent.get_current_choice)
 
-								# reset the player's choices
-								player.clear_choice
-								opponent.clear_choice
-
 								show_player_result(player, did_win)
 								show_player_result(opponent, !did_win)
 							end
+
+							player.clear_choice
+							opponent.clear_choice
+
 						end
 					end
 
