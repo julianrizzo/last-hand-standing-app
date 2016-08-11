@@ -9,6 +9,7 @@ require 'sass'
 require 'slim'
 
 require_relative 'models/tournament'
+require_relative 'models/message'
 
 class App < Sinatra::Base
 
@@ -118,7 +119,9 @@ class App < Sinatra::Base
 					send_all_players_message(tournament, show_lobby(tournament))
 				end
 				ws.onmessage do |msg|
-					if msg == 'play'
+					message = Message.new(msg)
+
+					if message.get_name == 'play'
 						if tournament.is_ready
 							players = tournament.get_opposing_player_pairs
 
@@ -126,8 +129,37 @@ class App < Sinatra::Base
 								show_player_match(opponents.get_player_1, opponents.get_player_2)
 								show_player_match(opponents.get_player_2, opponents.get_player_1)
 							end
+
 						end
 					end
+
+					if message.get_name == 'submitChoice'
+
+						player.set_current_choice(message.get_data["choice"])
+
+						opponent_id = message.get_data["opponentID"]
+						opponent = find_player_in_tournament(tournament, opponent_id.to_i)
+
+						opponent_choice = opponent.get_current_choice
+
+						if (!opponent_choice.nil?)
+
+							if (is_match_draw(player.get_current_choice, opponent.get_current_choice))
+
+								puts 'its a draw yo'
+
+							end
+
+							if (did_player_win(player.get_current_choice, opponent.get_current_choice))
+								puts 'yay i won!'
+							else
+								puts 'nooo i lost'
+							end
+
+						end
+					end
+
+
 				end
 				ws.onclose do
 					warn("websocket closed")
@@ -199,6 +231,44 @@ class App < Sinatra::Base
 		match = slim :"screens/match", locals: locals, layout: :js_layout
 
 		EM.next_tick { player.get_socket.send(match) }
+	end
+
+	def is_match_draw(player_choice, opponent_choice)
+		return player_choice == opponent_choice
+	end
+
+	def did_player_win(player_choice, opponent_choice)
+
+		if (player_choice == 'rock')
+
+			if (opponent_choice == 'paper')
+				# player lost
+				return false
+			end
+			 # player won
+				return true
+		end
+
+		if (player_choice == 'scissors')
+
+			if(opponent_choice == 'rock')
+				# player lost
+				return false
+			end
+			# player won
+			return true
+		end
+
+		if (player_choice == 'paper')
+
+			if (opponent_choice == 'scissors')
+				# player lost
+				return false
+			end
+			# player won
+			return true
+		end
+
 	end
 
 	get '/testmatch' do

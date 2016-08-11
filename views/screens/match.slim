@@ -7,12 +7,17 @@ article
 		span
 			| You are versing #{opponent.get_name}, select your weapon
 
-	section class="ui-default" data-default="#{options.sample}"
+	section class="ui-match" data-default="#{options.sample}" data-opponentid="#{opponent.get_id}"
 
 		- options.each do |option|
 			span
 				= option
 			i class="fa fa-hand-#{option}-o option ui-option" data-option="#{option}"
+
+
+	section class="ui-waiting hidden"
+		span
+			| Waiting for opponent cause they slow
 
 	footer
 		span class="ui-countdown countdown"

@@ -7,7 +7,7 @@ function CreateCountdown($element, startingSeconds) {
 
 	var timer = setInterval(function () {
 
-		if (currentSeconds > 0) {
+		if (currentSeconds >= 0) {
 			currentMilliSeconds--;
 
 			if (currentMilliSeconds <= 0) {

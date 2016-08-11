@@ -16,3 +16,12 @@ function InitialiseGame($container) {
         location.href = "/";
     };
 }
+
+function SendMessage(name, data) {
+    var message = {
+        name: name,
+        data: data
+    };
+    
+   socket.send(JSON.stringify(message)); 
+}

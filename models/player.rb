@@ -37,4 +37,12 @@ class Player
     @has_lost = true
   end
 
+  def set_current_choice(choice)
+    @choice = choice
+  end
+
+  def get_current_choice
+    return @choice
+  end
+
 end
