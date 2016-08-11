@@ -145,16 +145,14 @@ class App < Sinatra::Base
 						if (!opponent_choice.nil?)
 
 							if (is_match_draw(player.get_current_choice, opponent.get_current_choice))
-
 								show_player_match(player, opponent)
 								show_player_match(opponent, player)
+							else
+								did_win = did_player_win(player.get_current_choice, opponent.get_current_choice)
 
+								show_player_result(player, did_win)
+								show_player_result(opponent, !did_win)
 							end
-
-							did_win = did_player_win(player.get_current_choice, opponent.get_current_choice)
-
-							show_player_result(player, did_win)
-							show_player_result(opponent, !did_win)
 						end
 					end
 
