@@ -53,6 +53,9 @@ class App < Sinatra::Base
 			redirect '/create'
 		end
 
+		code = code.upcase
+		name = name.upcase
+
 		new_tournament = Tournament.new(code)
 		player_id = new_tournament.add_player(name)
 
@@ -72,10 +75,14 @@ class App < Sinatra::Base
 			redirect '/join'
 		end
 
+		name = name.upcase
+
 		if is_blank(code)
 			flash[:error] = "Please enter a code"
 			redirect '/join'
 		end
+
+		code = code.upcase
 
 		tournament = find_tournament(code)
 
