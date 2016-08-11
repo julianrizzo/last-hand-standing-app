@@ -14,9 +14,13 @@
 		text-align: left
 		top: 25px
 		transition: 0.4s
+		color: #B0B0B0
+
+		> i
+			margin-right: $standard-margin
 
 	input[type="text"]
-		padding: $standard-margin $standard-margin * 2
+		padding: $standard-margin $standard-margin / 2
 		outline: none
 		border: none
 		font-size: 20px
@@ -27,6 +31,7 @@
 		color: white
 		border-bottom: 3px solid $colour-button-primary
 
-		&:focus ~ label, &:valid ~ label
-			top: -5px
-			font-size: 10px
+		&.open
+			~ label
+				top: -5px
+				font-size: 10px
