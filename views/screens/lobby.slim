@@ -2,12 +2,13 @@
 article
 	header
 		h1
-			| Lobby
-		span
-			| Use the code below to help your friends join the game
+			= code
 
 	section class="top"
 
+		span class="small-text vert-space"
+			| Use the code above to help your friends join the game
+			
 		span class="fancy-banner"
 			| #{code}
 
@@ -21,8 +22,3 @@ article
 		button class="button ui-play"
 			i class="fa fa-play"
 			| Play
-
-javascript:
-	$(".ui-play").click(function() {
-		socket.send("play");
-	});

@@ -5,7 +5,12 @@ article
 
 	section
 		form action="/create" method="POST" id="createform"
-			input type="text" maxlength=12 placeholder="NAME" name="name"
+			ul
+				li class="form-item"
+					input type="text" maxlength=12 name="name" id="name" required="true"
+					label for="name"
+						| Name
+
 			input type="hidden" name="code" id="code"
 
 	footer

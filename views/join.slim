@@ -5,8 +5,16 @@ article
 
 	section
 		form action="/join" method="POST" id="joinform"
-			input type="text" maxlength=4 placeholder="CODE" name="code"
-			input type="text" maxlength=12 placeholder="NAME" name="name"
+			ul
+				li class="form-item"
+					input type="text" maxlength=4 name="code" id="code" required="true"
+					label for="code"
+						| Code
+
+				li class="form-item"
+					input type="text" maxlength=12 name="name" id="name" required="true"
+					label for="name"
+						| Name 
 
 	footer
 		button type="submit" class="button" id="joinbutton"

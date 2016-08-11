@@ -1,11 +1,18 @@
 - guid = SecureRandom.uuid
+- js_function = nil
+- if @init_function.nil?
+	- if defined?(init_function) && !init_function.nil?
+		- js_function = init_function
+- else
+  	- js_function = @init_function
+
 
 div id="#{guid}"
 
 	== yield
 
-- if @init_function
+- if !js_function.nil?
 	javascript:
 		$(document).ready(function(){
-			#{@init_function}($("\##{guid}"));
+			#{js_function}($("\##{guid}"));
 		});

@@ -134,7 +134,12 @@ class App < Sinatra::Base
 
 					tournament.delete_player(player)
 
-					send_all_players_message(tournament, show_lobby(tournament))
+					if tournament.get_players.length == 0
+						puts "deleting tournament"
+						settings.tournaments.delete(tournament)
+					else
+						send_all_players_message(tournament, show_lobby(tournament))	
+					end
 				end
 			end
 
@@ -175,13 +180,37 @@ class App < Sinatra::Base
 	end
 
 	def show_lobby(tournament)
-		return slim :"screens/lobby", locals: { players: tournament.get_players_with_sockets, code: tournament.get_code }, layout: false
+		locals = {
+			players: tournament.get_players_with_sockets, 
+			code: tournament.get_code,
+			init_function: "InitialiseLobby"
+		}
+
+		return slim :"screens/lobby", locals: locals, layout: :js_layout
 	end
 
 	def show_player_match(player, opponent)
-		match = slim :"screens/match", locals: { player: player, opponent: opponent }, layout: false
+		locals = {
+			player: player,
+			opponent: opponent,
+			init_function: "InitialiseMatch"
+		}
+
+		match = slim :"screens/match", locals: locals, layout: :js_layout
 
 		EM.next_tick { player.get_socket.send(match) }
+	end
+
+	get '/testmatch' do
+		locals = {
+			player: Player.new('james', 0),
+			opponent: Player.new('julian', 1),
+			init_function: "InitialiseMatch"
+		}
+
+		match = slim :"screens/match", locals: locals, layout: :js_layout
+
+		slim :game, locals: { screen: match }
 	end
 
 end

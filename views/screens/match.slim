@@ -1,51 +1,19 @@
+- options = ['rock', 'paper', 'scissors'].shuffle
+
 article
 	header
 		h1
 			| Game On
 		span
-			| You are versing #{opponent.get_name}
+			| You are versing #{opponent.get_name}, select your weapon
 
-	section data-default="rock"
+	section class="ui-default" data-default="#{options.sample}"
 
-		h1 #{player.get_name}
-
-
-		i class="fa fa-hand-rock-o"
-		i class="fa fa-hand-paper-o"
-		i class="fa fa-hand-scissors-o"
+		- options.each do |option|
+			span
+				= option
+			i class="fa fa-hand-#{option}-o option ui-option" data-option="#{option}"
 
 	footer
-		span class="ui-countdown"
-
-javascript:
-
-	var $countdown = $(".ui-countdown");
-
-	$(function () {
-		var $countdown = $(".ui-countdown");
-
-		var currentSeconds = 10;
-		var currentMilliSeconds = 0;
-
-		var timer = setInterval(function () {
-
-			if (currentSeconds > 0) {
-				currentMilliSeconds--;
-
-				if (currentMilliSeconds <= 0) {
-					currentMilliSeconds = 60;
-					currentSeconds--;
-				}
-
-				var milli = currentMilliSeconds < 10 ? "0" + currentMilliSeconds : currentMilliSeconds;
-
-				$countdown.text(currentSeconds + ":" + milli + " seconds");
-			} else {
-				clearInterval(timer);
-				$countdown.text("done mother fucker");
-			}
-
-		}, 10);
-
-
-	});
+		span class="ui-countdown countdown"
+		
