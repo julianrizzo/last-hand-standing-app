@@ -1,12 +1,32 @@
 @import "_vars"
 
-input[type="text"]
-	padding: 10px 20px
-	border-radius: 6px
-	outline: none
-	border: none
-	color: crimson
-	font-size: 20px
-	text-transform: uppercase
-	display: block
-	margin: $standard-margin 0
+.form-item
+	position: relative
+	margin-top: $standard-margin * 2
+
+	&:first-of-type
+		margin-top: 0
+
+	label
+		position: absolute
+		width: 100%
+		left: 0
+		text-align: left
+		top: 25px
+		transition: 0.4s
+
+	input[type="text"]
+		padding: $standard-margin $standard-margin * 2
+		outline: none
+		border: none
+		font-size: 20px
+		text-transform: uppercase
+		display: block
+		margin: $standard-margin 0
+		background: transparent
+		color: white
+		border-bottom: 3px solid $colour-button-primary
+
+		&:focus ~ label, &:valid ~ label
+			top: -5px
+			font-size: 10px

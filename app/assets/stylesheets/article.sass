@@ -12,12 +12,9 @@ article
 	> header
 		width: 100%
 		height: $header-height
+		line-height: $header-height
 		flex-grow: 0
-		display: flex
-		align-items: center
-		justify-content: center
-		flex-wrap: wrap
-		flex-direction: column
+		background: $colour-button-primary
 
 	> section
 		width: 100%
@@ -43,7 +40,7 @@ article
 			height: $footer-height
 			line-height: $footer-height
 			font-size: 2em
-			color: $colour-button-secondary
+			color: $colour-button-primary
 			background: white
 			text-decoration: none
 			flex-grow: 1
@@ -57,7 +54,6 @@ article
 
 			&:nth-child(2)
 				margin-left: 2px
-				color: $colour-button-secondary
 
 			&:active
 				transform: scale(0.9)
