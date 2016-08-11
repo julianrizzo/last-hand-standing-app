@@ -146,16 +146,15 @@ class App < Sinatra::Base
 
 							if (is_match_draw(player.get_current_choice, opponent.get_current_choice))
 
-								puts 'its a draw yo'
+								show_player_match(player, opponent)
+								show_player_match(opponent, player)
 
 							end
 
-							if (did_player_win(player.get_current_choice, opponent.get_current_choice))
-								puts 'yay i won!'
-							else
-								puts 'nooo i lost'
-							end
+							did_win = did_player_win(player.get_current_choice, opponent.get_current_choice)
 
+							show_player_result(player, did_win)
+							show_player_result(opponent, !did_win)
 						end
 					end
 
@@ -231,6 +230,16 @@ class App < Sinatra::Base
 		match = slim :"screens/match", locals: locals, layout: :js_layout
 
 		EM.next_tick { player.get_socket.send(match) }
+	end
+
+	def show_player_result(player, did_win)
+		locals = {
+				did_win: did_win
+		}
+
+		result = slim :"screens/result", locals: locals, layout: false
+
+		EM.next_tick { player.get_socket.send(result) }
 	end
 
 	def is_match_draw(player_choice, opponent_choice)
