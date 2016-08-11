@@ -7,16 +7,16 @@ function InitialiseMatch($container) {
 
 	var hasChosen = false;
 
-	// CreateCountdown($countdown, 15).done(function() {
-	// 	if (hasChosen == false) {
-	// 		$countdown.text("OUT OF TIME");
-    //
-     //        ShowWaiting($container);
-     //        SendChoice(opponentID, defaultOption);
-	// 	} else {
-     //        $countdown.text("PLAYER SELECTED SOMETHING");
-     //    }
-	// });
+	CreateCountdown($countdown, 15).done(function() {
+		if (hasChosen == false) {
+			$countdown.text("OUT OF TIME");
+
+            ShowWaiting($container);
+            SendChoice(opponentID, defaultOption);
+		} else {
+            $countdown.text("PLAYER SELECTED SOMETHING");
+        }
+	});
 
 	var $options = $container.find(".ui-option");
 

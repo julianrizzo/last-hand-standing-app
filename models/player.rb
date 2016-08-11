@@ -45,4 +45,8 @@ class Player
     return @choice
   end
 
+  def clear_choice
+    @choice = nil
+  end
+
 end
