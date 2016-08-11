@@ -127,7 +127,12 @@ class App < Sinatra::Base
 
 					tournament.delete_player(player)
 
-					send_all_players_message(tournament, show_lobby(tournament))
+					if tournament.get_players.length == 0
+						puts "deleting tournament"
+						settings.tournaments.delete(tournament)
+					else
+						send_all_players_message(tournament, show_lobby(tournament))	
+					end
 				end
 			end
 
