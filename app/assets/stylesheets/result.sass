@@ -1,0 +1,48 @@
+@import "_vars"
+
+$result-animation-duration: 0.4s
+$animation-delay-buffer: 0.2s
+$death-style-animation-delay: $result-animation-duration + $animation-delay-buffer
+$losing-animation-delay: $death-style-animation-delay + $result-animation-duration + $animation-delay-buffer
+
+.choice
+	font-size: 3.8em
+	font-weight: bold
+	font-style: italic
+	width: 100%
+	display: block
+	margin: $standard-margin 0
+	text-transform: uppercase
+
+	&.winning
+		animation-name: from-left
+		animation-duration: $result-animation-duration
+		animation-timing-function: ease-out
+
+	&.losing
+		animation-name: from-left
+		animation-duration: $result-animation-duration
+		animation-timing-function: ease-out
+		animation-delay: $losing-animation-delay
+		animation-fill-mode: backwards
+
+.death-style
+	display: block
+	width: 100%
+	animation-name: from-right
+	animation-duration: $result-animation-duration
+	animation-timing-function: ease-out
+	animation-delay: $death-style-animation-delay
+	animation-fill-mode: backwards
+
+@keyframes from-left
+	0%
+		transform: translateX(-200%)
+	100%
+		transform: translateX(0)
+
+@keyframes from-right
+	0%
+		transform: translateX(200%)
+	100%
+		transform: translateX(0)

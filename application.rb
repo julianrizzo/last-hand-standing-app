@@ -150,8 +150,11 @@ class App < Sinatra::Base
 							else
 								did_win = did_player_win(player.get_current_choice, opponent.get_current_choice)
 
-								show_player_result(player, did_win)
-								show_player_result(opponent, !did_win)
+								winning_choice = did_win ? player.get_current_choice : opponent.get_current_choice
+								losing_choice = did_win ? opponent.get_current_choice : player.get_current_choice
+
+								show_player_result(player, did_win, winning_choice, losing_choice)
+								show_player_result(opponent, !did_win, winning_choice, losing_choice)
 							end
 
 							player.clear_choice
@@ -234,9 +237,11 @@ class App < Sinatra::Base
 		EM.next_tick { player.get_socket.send(match) }
 	end
 
-	def show_player_result(player, did_win)
+	def show_player_result(player, did_win, winning_choice, losing_choice)
 		locals = {
-				did_win: did_win
+				did_win: did_win,
+				winning_choice: winning_choice,
+				losing_choice: losing_choice
 		}
 
 		result = slim :"screens/result", locals: locals, layout: false
@@ -292,6 +297,18 @@ class App < Sinatra::Base
 		match = slim :"screens/match", locals: locals, layout: :js_layout
 
 		slim :game, locals: { screen: match }
+	end
+
+	get '/testresult' do
+		locals = {
+				did_win: true,
+				winning_choice: 'rock',
+				losing_choice: 'scissors'
+		}
+
+		result = slim :'screens/result', locals: locals, layout: false
+
+		slim :game, locals: { screen: result }
 	end
 
 end

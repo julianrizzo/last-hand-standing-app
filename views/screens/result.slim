@@ -1,12 +1,25 @@
+- verdict = did_win ? 'you win' : 'you lose'
+
 article
 	header
 		h1
-			| Verdict
+			= verdict
 
 	section
-		- if did_win
-			h2 YOU WIN
-		- else
-			h2 YOU LOSE
+		span class="winning choice"
+			= winning_choice
+
+		span class="death-style"
+			- if winning_choice == 'rock'
+				| crushes
+			- elsif winning_choice == 'paper'
+				| wraps
+			- elsif winning_choice == 'scissors'
+				| cuts
+
+		span class="losing choice"
+			= losing_choice
 
 	footer
+		h1 class="footer-text"
+			= verdict
