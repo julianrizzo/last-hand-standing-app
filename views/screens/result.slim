@@ -11,11 +11,11 @@ article
 
 		span class="death-style"
 			- if winning_choice == 'rock'
-				| crushes
+				= ['crushes', 'smashes', 'destroys', 'obliterates'].sample
 			- elsif winning_choice == 'paper'
-				| wraps
+				= ['wraps', 'covers', 'smothers', 'cloaks'].sample
 			- elsif winning_choice == 'scissors'
-				| cuts
+				= ['cut', 'slice', 'dice', 'shred'].sample
 
 		span class="losing choice"
 			= losing_choice
