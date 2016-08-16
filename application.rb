@@ -10,6 +10,7 @@ require 'slim'
 
 require_relative 'models/tournament'
 require_relative 'models/message'
+require_relative 'helpers/game_helper'
 
 class App < Sinatra::Base
 
@@ -104,6 +105,31 @@ class App < Sinatra::Base
 		slim :game
 	end
 
+	get '/testmatch' do
+		locals = {
+				player: Player.new('james', 0),
+				opponent: Player.new('julian', 1),
+				init_function: 'InitialiseMatch'
+		}
+
+		match = slim :"screens/match", locals: locals, layout: :js_layout
+
+		slim :game, locals: { screen: match }
+	end
+
+	get '/testresult' do
+		locals = {
+				did_win: true,
+				winning_choice: 'rock',
+				losing_choice: 'scissors',
+				init_function: 'InitialiseResult'
+		}
+
+		result = slim :'screens/result', locals: locals, layout: :js_layout
+
+		slim :game, locals: { screen: result }
+	end
+
 	get '/communicate/:code/:player_id' do |code, player_id|
 		if request.websocket?
 
@@ -144,11 +170,12 @@ class App < Sinatra::Base
 
 						if (!opponent_choice.nil?)
 
-							if (is_match_draw(player.get_current_choice, opponent.get_current_choice))
+								is_draw = GameHelper.is_match_draw(player.get_current_choice, opponent.get_current_choice)
+							if is_draw
 								show_player_match(player, opponent)
 								show_player_match(opponent, player)
 							else
-								did_win = did_player_win(player.get_current_choice, opponent.get_current_choice)
+								did_win = GameHelper.did_player_win(player.get_current_choice, opponent.get_current_choice)
 
 								winning_choice = did_win ? player.get_current_choice : opponent.get_current_choice
 								losing_choice = did_win ? opponent.get_current_choice : player.get_current_choice
@@ -217,14 +244,9 @@ class App < Sinatra::Base
 	end
 
 	def send_all_players_message(tournament, message)
-
 		tournament.get_players.each do |player|
-			if !player.get_socket.nil?
-
-				EM.next_tick { player.get_socket.send(message) }
+				send_player_message(player, message)
 			end
-		end
-
 	end
 
 	def show_lobby(tournament)
@@ -246,7 +268,7 @@ class App < Sinatra::Base
 
 		match = slim :"screens/match", locals: locals, layout: :js_layout
 
-		EM.next_tick { player.get_socket.send(match) }
+		send_player_message(player, match)
 	end
 
 	def show_player_result(player, did_win, winning_choice, losing_choice)
@@ -259,70 +281,6 @@ class App < Sinatra::Base
 
 		result = slim :"screens/result", locals: locals, layout: :js_layout
 
-		EM.next_tick { player.get_socket.send(result) }
+		send_player_message(player, result)
 	end
-
-	def is_match_draw(player_choice, opponent_choice)
-		return player_choice == opponent_choice
-	end
-
-	def did_player_win(player_choice, opponent_choice)
-
-		if (player_choice == 'rock')
-
-			if (opponent_choice == 'paper')
-				# player lost
-				return false
-			end
-			 # player won
-				return true
-		end
-
-		if (player_choice == 'scissors')
-
-			if(opponent_choice == 'rock')
-				# player lost
-				return false
-			end
-			# player won
-			return true
-		end
-
-		if (player_choice == 'paper')
-
-			if (opponent_choice == 'scissors')
-				# player lost
-				return false
-			end
-			# player won
-			return true
-		end
-
-	end
-
-	get '/testmatch' do
-		locals = {
-			player: Player.new('james', 0),
-			opponent: Player.new('julian', 1),
-			init_function: 'InitialiseMatch'
-		}
-
-		match = slim :"screens/match", locals: locals, layout: :js_layout
-
-		slim :game, locals: { screen: match }
-	end
-
-	get '/testresult' do
-		locals = {
-				did_win: true,
-				winning_choice: 'rock',
-				losing_choice: 'scissors',
-				init_function: 'InitialiseResult'
-		}
-
-		result = slim :'screens/result', locals: locals, layout: :js_layout
-
-		slim :game, locals: { screen: result }
-	end
-
 end
