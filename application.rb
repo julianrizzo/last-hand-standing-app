@@ -163,6 +163,12 @@ class App < Sinatra::Base
 						end
 					end
 
+					if message.get_name == 'showLobby'
+						lobby = show_lobby(tournament)
+
+						send_player_message(player, lobby)
+					end
+
 
 				end
 				ws.onclose do
@@ -204,6 +210,12 @@ class App < Sinatra::Base
 		return nil
 	end
 
+	def send_player_message(player, message)
+		if !player.get_socket.nil?
+			EM.next_tick { player.get_socket.send(message) }
+		end
+	end
+
 	def send_all_players_message(tournament, message)
 
 		tournament.get_players.each do |player|
@@ -219,7 +231,7 @@ class App < Sinatra::Base
 		locals = {
 			players: tournament.get_players_with_sockets, 
 			code: tournament.get_code,
-			init_function: "InitialiseLobby"
+			init_function: 'InitialiseLobby'
 		}
 
 		return slim :"screens/lobby", locals: locals, layout: :js_layout
@@ -229,7 +241,7 @@ class App < Sinatra::Base
 		locals = {
 			player: player,
 			opponent: opponent,
-			init_function: "InitialiseMatch"
+			init_function: 'InitialiseMatch'
 		}
 
 		match = slim :"screens/match", locals: locals, layout: :js_layout
@@ -241,10 +253,11 @@ class App < Sinatra::Base
 		locals = {
 				did_win: did_win,
 				winning_choice: winning_choice,
-				losing_choice: losing_choice
+				losing_choice: losing_choice,
+				init_function: 'InitialiseResult'
 		}
 
-		result = slim :"screens/result", locals: locals, layout: false
+		result = slim :"screens/result", locals: locals, layout: :js_layout
 
 		EM.next_tick { player.get_socket.send(result) }
 	end
@@ -291,7 +304,7 @@ class App < Sinatra::Base
 		locals = {
 			player: Player.new('james', 0),
 			opponent: Player.new('julian', 1),
-			init_function: "InitialiseMatch"
+			init_function: 'InitialiseMatch'
 		}
 
 		match = slim :"screens/match", locals: locals, layout: :js_layout
@@ -303,10 +316,11 @@ class App < Sinatra::Base
 		locals = {
 				did_win: true,
 				winning_choice: 'rock',
-				losing_choice: 'scissors'
+				losing_choice: 'scissors',
+				init_function: 'InitialiseResult'
 		}
 
-		result = slim :'screens/result', locals: locals, layout: false
+		result = slim :'screens/result', locals: locals, layout: :js_layout
 
 		slim :game, locals: { screen: result }
 	end
