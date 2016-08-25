@@ -130,6 +130,12 @@ class App < Sinatra::Base
 		slim :game, locals: { screen: result }
 	end
 
+	get '/testdraw' do
+		draw = slim :'screens/draw', layout: false
+
+		slim :game, locals: { screen: draw }
+	end
+
 	get '/communicate/:code/:player_id' do |code, player_id|
 		if request.websocket?
 
@@ -170,8 +176,8 @@ class App < Sinatra::Base
 
 								is_draw = GameHelper.is_match_draw(player.get_current_choice, opponent.get_current_choice)
 							if is_draw
-								show_player_match(player, opponent)
-								show_player_match(opponent, player)
+								show_draw(player)
+								show_draw(opponent)
 							else
 								did_win = GameHelper.did_player_win(player.get_current_choice, opponent.get_current_choice)
 
@@ -188,12 +194,16 @@ class App < Sinatra::Base
 						end
 					end
 
+					if message.get_name == 'rematch'
+						opponent = tournament.get_opponent(player)
+						show_player_match(player, opponent)
+					end
+
 					if message.get_name == 'showLobby'
 						lobby = show_lobby(tournament)
 
 						send_player_message(player, lobby)
 					end
-
 
 				end
 				ws.onclose do
@@ -267,6 +277,16 @@ class App < Sinatra::Base
 		match = slim :"screens/match", locals: locals, layout: :js_layout
 
 		send_player_message(player, match)
+	end
+
+	def show_draw(player)
+		locals = {
+				init_function: 'InitialiseDraw'
+		}
+
+		draw = slim :"screens/draw", locals: locals, layout: :js_layout
+
+		send_player_message(player, draw)
 	end
 
 	def show_player_result(player, did_win, winning_choice, losing_choice)
