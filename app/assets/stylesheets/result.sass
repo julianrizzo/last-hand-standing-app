@@ -5,8 +5,25 @@ $animation-delay-buffer: 0.2s
 $death-style-animation-delay: $result-animation-duration + $animation-delay-buffer
 $losing-animation-delay: $death-style-animation-delay + $result-animation-duration + $animation-delay-buffer
 
+=result-animation($name, $delay)
+	animation-name: $name
+	animation-duration: $result-animation-duration
+	animation-timing-function: ease-out
+	animation-delay: $delay
+	animation-fill-mode: backwards
+	-webkit-animation-name: $name
+	-webkit-animation-duration: $result-animation-duration
+	-webkit-animation-timing-function: ease-out
+	-webkit-animation-delay: $delay
+	-webkit-animation-fill-mode: backwards
+	-moz-animation-name: $name
+	-moz-animation-duration: $result-animation-duration
+	-moz-animation-timing-function: ease-out
+	-moz-animation-delay: $delay
+	-moz-animation-fill-mode: backwards
+
 .choice
-	font-size: 3.8em
+	font-size: 3.4em
 	font-weight: bold
 	font-style: italic
 	width: 100%
@@ -16,25 +33,15 @@ $losing-animation-delay: $death-style-animation-delay + $result-animation-durati
 	text-shadow: 1px 2px 4px rgba(0,0,0,0.4)
 
 	&.winning
-		animation-name: from-left
-		animation-duration: $result-animation-duration
-		animation-timing-function: ease-out
+		+result-animation(from-left, 0)
 
 	&.losing
-		animation-name: from-left
-		animation-duration: $result-animation-duration
-		animation-timing-function: ease-out
-		animation-delay: $losing-animation-delay
-		animation-fill-mode: backwards
+		+result-animation(from-left, $losing-animation-delay)
 
 .death-style
 	display: block
 	width: 100%
-	animation-name: from-right
-	animation-duration: $result-animation-duration
-	animation-timing-function: ease-out
-	animation-delay: $death-style-animation-delay
-	animation-fill-mode: backwards
+	+result-animation(from-right, $death-style-animation-delay)
 
 @keyframes from-left
 	0%
