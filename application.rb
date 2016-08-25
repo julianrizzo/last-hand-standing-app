@@ -163,9 +163,7 @@ class App < Sinatra::Base
 
 						player.set_current_choice(message.get_data["choice"])
 
-						opponent_id = message.get_data["opponentID"]
-						opponent = find_player_in_tournament(tournament, opponent_id.to_i)
-
+						opponent = tournament.get_opponent(player)
 						opponent_choice = opponent.get_current_choice
 
 						if (!opponent_choice.nil?)

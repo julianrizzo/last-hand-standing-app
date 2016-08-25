@@ -1,7 +1,6 @@
 function InitialiseMatch($container) {
 	var $match = $container.find(".ui-match");
 	var defaultOption = $match.data("default");
-	var opponentID = Number($match.data("opponentid"));
 	
 	var $countdown = $container.find(".ui-countdown");
 
@@ -12,7 +11,7 @@ function InitialiseMatch($container) {
 			$countdown.text("OUT OF TIME");
 
             ShowWaiting($container);
-            SendChoice(opponentID, defaultOption);
+            SendChoice(defaultOption);
 		} else {
             $countdown.text("PLAYER SELECTED SOMETHING");
         }
@@ -26,13 +25,12 @@ function InitialiseMatch($container) {
 		var option = $option.data("option");
 
         ShowWaiting($container);
-        SendChoice(opponentID, option);
+        SendChoice(option);
 	});
 }
 
-function SendChoice(opponentID, choice) {
+function SendChoice(choice) {
 	var data = {
-		opponentID: opponentID,
 		choice: choice
 	};
 

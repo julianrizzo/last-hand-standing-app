@@ -66,7 +66,27 @@ class Tournament
       end
     end
 
+    @current_opponents = opponents
+
     return opponents
+  end
+
+  def get_opponent(player)
+    if !@current_opponents.nil?
+
+      @current_opponents.each do |pair|
+
+        if pair.get_player_1.get_id == player.get_id
+          return pair.get_player_2
+        end
+
+        if pair.get_player_2.get_id == player.get_id
+          return pair.get_player_1
+        end
+      end
+    end
+
+    return nil
   end
 
 end
