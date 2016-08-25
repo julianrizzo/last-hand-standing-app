@@ -1,5 +1,13 @@
 class GameHelper
 
+  def self.choices
+    return ['rock', 'paper', 'scissors']
+  end
+
+  def self.select_random_choice
+    return choices.sample
+  end
+
 	def self.is_match_draw(player_choice, opponent_choice)
 		return player_choice == opponent_choice
 	end

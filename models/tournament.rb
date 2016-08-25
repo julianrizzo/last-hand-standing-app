@@ -7,6 +7,8 @@ class Tournament
     @code = code
 
     @players = []
+
+    @fake_player = Player.new("AI", -1)
   end
 
   def get_code
@@ -38,11 +40,6 @@ class Tournament
     @players.delete(player)
   end
 
-  def is_ready
-    return @players.length % 2 == 0
-  end
-
-
   def get_surviving_players
     return @players.select { |p| !p.has_lost }
   end
@@ -52,18 +49,21 @@ class Tournament
     opponents = []
     players = get_surviving_players
 
-    if players.length % 2 == 0
+    if players.length % 2 != 0
+      @fake_player.set_current_choice(GameHelper.select_random_choice)
 
-      while players.length > 0
+      players.push(@fake_player)
+    end
 
-        players = players.shuffle
-        player_1  = players.pop
+    while players.length > 0
 
-        players = players.shuffle
-        player_2  = players.pop
+      players = players.shuffle
+      player_1  = players.pop
 
-        opponents.push(Opponents.new(player_1, player_2))
-      end
+      players = players.shuffle
+      player_2  = players.pop
+
+      opponents.push(Opponents.new(player_1, player_2))
     end
 
     @current_opponents = opponents

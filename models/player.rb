@@ -46,7 +46,13 @@ class Player
   end
 
   def clear_choice
-    @choice = nil
+    if @id < 0
+      # set choice for next round instead of clearing if AI
+      @choice = GameHelper.select_random_choice
+    else
+      @choice = nil
+    end
+
   end
 
 end

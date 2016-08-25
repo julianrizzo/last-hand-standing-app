@@ -14,291 +14,290 @@ require_relative 'helpers/game_helper'
 
 class App < Sinatra::Base
 
-	set :root, File.dirname(__FILE__)
-	set :public_folder, File.dirname(__FILE__) + '/public/'
-	set :assets_prefix, %w(app/assets vendor/assets)
+  set :root, File.dirname(__FILE__)
+  set :public_folder, File.dirname(__FILE__) + '/public/'
+  set :assets_prefix, %w(app/assets vendor/assets)
 
-	set :assets_precompile, %w(application.js application.css vendor.js vendor.css *.png *.jpg *.svg *.eot *.ttf *.woff)
+  set :assets_precompile, %w(application.js application.css vendor.js vendor.css *.png *.jpg *.svg *.eot *.ttf *.woff)
 
-	set :tournaments, []
+  set :tournaments, []
 
-	enable :sessions
+  enable :sessions
 
-	register Sinatra::AssetPipeline
-	register Sinatra::Flash
+  register Sinatra::AssetPipeline
+  register Sinatra::Flash
 
-	configure :development do
-		register Sinatra::Reloader
-	end
+  configure :development do
+    register Sinatra::Reloader
+  end
 
-	get '/' do
-		slim :index
-	end
+  get '/' do
+    slim :index
+  end
 
-	get '/join' do
-		@init_function = "InitialiseJoin"
-		slim :join
-	end
+  get '/join' do
+    @init_function = "InitialiseJoin"
+    slim :join
+  end
 
-	get '/create' do
-		@init_function = "InitialiseCreate"
-		slim :create
-	end
+  get '/create' do
+    @init_function = "InitialiseCreate"
+    slim :create
+  end
 
-	post '/create' do
+  post '/create' do
 
-		code = params["code"]
-		name = params["name"]
+    code = params["code"]
+    name = params["name"]
 
-		if is_blank(name)
-			flash[:error] = "Please state your name"
-			redirect '/create'
-		end
+    if is_blank(name)
+      flash[:error] = "Please state your name"
+      redirect '/create'
+    end
 
-		code = code.upcase
-		name = name.upcase
+    code = code.upcase
+    name = name.upcase
 
-		new_tournament = Tournament.new(code)
-		player_id = new_tournament.add_player(name)
+    new_tournament = Tournament.new(code)
+    player_id = new_tournament.add_player(name)
 
-		settings.tournaments.push(new_tournament)
+    settings.tournaments.push(new_tournament)
 
-		redirect "/game/#{code}/#{player_id}"
+    redirect "/game/#{code}/#{player_id}"
 
-	end
+  end
 
-	post '/join' do
+  post '/join' do
 
-		code = params["code"]
-		name = params["name"]
+    code = params["code"]
+    name = params["name"]
 
-		if is_blank(name)
-			flash[:error] = "Please state your name"
-			redirect '/join'
-		end
+    if is_blank(name)
+      flash[:error] = "Please state your name"
+      redirect '/join'
+    end
 
-		name = name.upcase
+    name = name.upcase
 
-		if is_blank(code)
-			flash[:error] = "Please enter a code"
-			redirect '/join'
-		end
+    if is_blank(code)
+      flash[:error] = "Please enter a code"
+      redirect '/join'
+    end
 
-		code = code.upcase
+    code = code.upcase
 
-		tournament = find_tournament(code)
+    tournament = find_tournament(code)
 
-		if tournament.nil?
-			flash[:error] = "Tournament not found"
-			redirect '/join'
-		end
+    if tournament.nil?
+      flash[:error] = "Tournament not found"
+      redirect '/join'
+    end
 
-		player_id = tournament.add_player(name)
+    player_id = tournament.add_player(name)
 
-		redirect "/game/#{code}/#{player_id}"
-	end
+    redirect "/game/#{code}/#{player_id}"
+  end
 
-	get '/game/:code/:player_id' do |code, player_id|
-		@code = code
-		@id = player_id
-		@init_function = "InitialiseGame"
-		slim :game
-	end
+  get '/game/:code/:player_id' do |code, player_id|
+    @code = code
+    @id = player_id
+    @init_function = "InitialiseGame"
+    slim :game
+  end
 
-	get '/testmatch' do
-		locals = {
-				player: Player.new('james', 0),
-				opponent: Player.new('julian', 1),
-				init_function: 'InitialiseMatch'
-		}
+  get '/testmatch' do
+    locals = {
+        player: Player.new('james', 0),
+        opponent: Player.new('julian', 1),
+        init_function: 'InitialiseMatch'
+    }
 
-		match = slim :"screens/match", locals: locals, layout: :js_layout
+    match = slim :"screens/match", locals: locals, layout: :js_layout
 
-		slim :game, locals: { screen: match }
-	end
+    slim :game, locals: { screen: match }
+  end
 
-	get '/testresult' do
-		locals = {
-				did_win: true,
-				winning_choice: 'rock',
-				losing_choice: 'scissors',
-				init_function: 'InitialiseResult'
-		}
+  get '/testresult' do
+    locals = {
+        did_win: true,
+        winning_choice: 'rock',
+        losing_choice: 'scissors',
+        init_function: 'InitialiseResult'
+    }
 
-		result = slim :'screens/result', locals: locals, layout: :js_layout
+    result = slim :'screens/result', locals: locals, layout: :js_layout
 
-		slim :game, locals: { screen: result }
-	end
+    slim :game, locals: { screen: result }
+  end
 
-	get '/testdraw' do
-		draw = slim :'screens/draw', layout: false
+  get '/testdraw' do
+    draw = slim :'screens/draw', layout: false
 
-		slim :game, locals: { screen: draw }
-	end
+    slim :game, locals: { screen: draw }
+  end
 
-	get '/communicate/:code/:player_id' do |code, player_id|
-		if request.websocket?
+  get '/communicate/:code/:player_id' do |code, player_id|
+    if request.websocket?
 
-			tournament = find_tournament(code)
-			player = find_player_in_tournament(tournament, player_id.to_i)
+      tournament = find_tournament(code)
+      player = find_player_in_tournament(tournament, player_id.to_i)
 
-			request.websocket do |ws|
-				ws.onopen do
-					puts "someone has connected"
+      request.websocket do |ws|
+        ws.onopen do
+          puts "someone has connected"
 
-					player.add_socket(ws)
+          player.add_socket(ws)
 
-					send_all_players_message(tournament, show_lobby(tournament))
-				end
-				ws.onmessage do |msg|
-					message = Message.new(msg)
+          send_all_players_message(tournament, show_lobby(tournament))
+        end
+        ws.onmessage do |msg|
+          message = Message.new(msg)
 
-					if message.get_name == 'play'
-						if tournament.is_ready
-							players = tournament.get_opposing_player_pairs
+          if message.get_name == 'play'
 
-							players.each do |opponents|
-								show_player_match(opponents.get_player_1, opponents.get_player_2)
-								show_player_match(opponents.get_player_2, opponents.get_player_1)
-							end
+            players = tournament.get_opposing_player_pairs
 
-						end
-					end
+            players.each do |opponents|
+              show_player_match(opponents.get_player_1, opponents.get_player_2)
+              show_player_match(opponents.get_player_2, opponents.get_player_1)
+            end
 
-					if message.get_name == 'submitChoice'
+          end
 
-						player.set_current_choice(message.get_data["choice"])
+          if message.get_name == 'submitChoice'
 
-						opponent = tournament.get_opponent(player)
-						opponent_choice = opponent.get_current_choice
-
-						if (!opponent_choice.nil?)
-
-								is_draw = GameHelper.is_match_draw(player.get_current_choice, opponent.get_current_choice)
-							if is_draw
-								show_draw(player)
-								show_draw(opponent)
-							else
-								did_win = GameHelper.did_player_win(player.get_current_choice, opponent.get_current_choice)
+            player.set_current_choice(message.get_data["choice"])
 
-								winning_choice = did_win ? player.get_current_choice : opponent.get_current_choice
-								losing_choice = did_win ? opponent.get_current_choice : player.get_current_choice
-
-								show_player_result(player, did_win, winning_choice, losing_choice)
-								show_player_result(opponent, !did_win, winning_choice, losing_choice)
-							end
+            opponent = tournament.get_opponent(player)
+            opponent_choice = opponent.get_current_choice
 
-							player.clear_choice
-							opponent.clear_choice
+            if (!opponent_choice.nil?)
 
-						end
-					end
+              is_draw = GameHelper.is_match_draw(player.get_current_choice, opponent.get_current_choice)
+              if is_draw
+                show_draw(player)
+                show_draw(opponent)
+              else
+                did_win = GameHelper.did_player_win(player.get_current_choice, opponent.get_current_choice)
 
-					if message.get_name == 'rematch'
-						opponent = tournament.get_opponent(player)
-						show_player_match(player, opponent)
-					end
+                winning_choice = did_win ? player.get_current_choice : opponent.get_current_choice
+                losing_choice = did_win ? opponent.get_current_choice : player.get_current_choice
 
-					if message.get_name == 'showLobby'
-						lobby = show_lobby(tournament)
+                show_player_result(player, did_win, winning_choice, losing_choice)
+                show_player_result(opponent, !did_win, winning_choice, losing_choice)
+              end
 
-						send_player_message(player, lobby)
-					end
+              player.clear_choice
+              opponent.clear_choice
 
-				end
-				ws.onclose do
-					warn("websocket closed")
+            end
+          end
 
-					tournament.delete_player(player)
+          if message.get_name == 'rematch'
+            opponent = tournament.get_opponent(player)
+            show_player_match(player, opponent)
+          end
 
-					if tournament.get_players.length == 0
-						puts "deleting tournament"
-						settings.tournaments.delete(tournament)
-					else
-						send_all_players_message(tournament, show_lobby(tournament))	
-					end
-				end
-			end
+          if message.get_name == 'showLobby'
+            lobby = show_lobby(tournament)
 
-		end
-	end
+            send_player_message(player, lobby)
+          end
 
-	def is_blank(thing)
-		return thing.nil? || thing.empty?
-	end
+        end
+        ws.onclose do
+          warn("websocket closed")
 
-	def find_tournament(code)
-		tours = settings.tournaments.select { |t| t.get_code == code }
-		if tours.length > 0
-			return tours[0]
-		end
+          tournament.delete_player(player)
 
-		return nil
-	end
+          if tournament.get_players.length == 0
+            puts "deleting tournament"
+            settings.tournaments.delete(tournament)
+          else
+            send_all_players_message(tournament, show_lobby(tournament))
+          end
+        end
+      end
 
-	def find_player_in_tournament(tournament, player_id)
-		players = tournament.get_players.select { |p| p.get_id == player_id }
-		if players.length > 0
-			return players[0]
-		end
+    end
+  end
 
-		return nil
-	end
+  def is_blank(thing)
+    return thing.nil? || thing.empty?
+  end
 
-	def send_player_message(player, message)
-		if !player.get_socket.nil?
-			EM.next_tick { player.get_socket.send(message) }
-		end
-	end
+  def find_tournament(code)
+    tours = settings.tournaments.select { |t| t.get_code == code }
+    if tours.length > 0
+      return tours[0]
+    end
 
-	def send_all_players_message(tournament, message)
-		tournament.get_players.each do |player|
-				send_player_message(player, message)
-			end
-	end
+    return nil
+  end
 
-	def show_lobby(tournament)
-		locals = {
-			players: tournament.get_players_with_sockets, 
-			code: tournament.get_code,
-			init_function: 'InitialiseLobby'
-		}
+  def find_player_in_tournament(tournament, player_id)
+    players = tournament.get_players.select { |p| p.get_id == player_id }
+    if players.length > 0
+      return players[0]
+    end
 
-		return slim :"screens/lobby", locals: locals, layout: :js_layout
-	end
+    return nil
+  end
 
-	def show_player_match(player, opponent)
-		locals = {
-			player: player,
-			opponent: opponent,
-			init_function: 'InitialiseMatch'
-		}
+  def send_player_message(player, message)
+    if !player.get_socket.nil?
+      EM.next_tick { player.get_socket.send(message) }
+    end
+  end
 
-		match = slim :"screens/match", locals: locals, layout: :js_layout
+  def send_all_players_message(tournament, message)
+    tournament.get_players.each do |player|
+      send_player_message(player, message)
+    end
+  end
 
-		send_player_message(player, match)
-	end
+  def show_lobby(tournament)
+    locals = {
+        players: tournament.get_players_with_sockets,
+        code: tournament.get_code,
+        init_function: 'InitialiseLobby'
+    }
 
-	def show_draw(player)
-		locals = {
-				init_function: 'InitialiseDraw'
-		}
+    return slim :"screens/lobby", locals: locals, layout: :js_layout
+  end
 
-		draw = slim :"screens/draw", locals: locals, layout: :js_layout
+  def show_player_match(player, opponent)
+    locals = {
+        player: player,
+        opponent: opponent,
+        init_function: 'InitialiseMatch'
+    }
 
-		send_player_message(player, draw)
-	end
+    match = slim :"screens/match", locals: locals, layout: :js_layout
 
-	def show_player_result(player, did_win, winning_choice, losing_choice)
-		locals = {
-				did_win: did_win,
-				winning_choice: winning_choice,
-				losing_choice: losing_choice,
-				init_function: 'InitialiseResult'
-		}
+    send_player_message(player, match)
+  end
 
-		result = slim :"screens/result", locals: locals, layout: :js_layout
+  def show_draw(player)
+    locals = {
+        init_function: 'InitialiseDraw'
+    }
 
-		send_player_message(player, result)
-	end
+    draw = slim :"screens/draw", locals: locals, layout: :js_layout
+
+    send_player_message(player, draw)
+  end
+
+  def show_player_result(player, did_win, winning_choice, losing_choice)
+    locals = {
+        did_win: did_win,
+        winning_choice: winning_choice,
+        losing_choice: losing_choice,
+        init_function: 'InitialiseResult'
+    }
+
+    result = slim :"screens/result", locals: locals, layout: :js_layout
+
+    send_player_message(player, result)
+  end
 end
