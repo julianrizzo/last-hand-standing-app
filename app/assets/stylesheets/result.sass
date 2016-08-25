@@ -22,6 +22,12 @@ $losing-animation-delay: $death-style-animation-delay + $result-animation-durati
 	-moz-animation-delay: $delay
 	-moz-animation-fill-mode: backwards
 
+=result-transform($x)
+	transform: translateX($x)
+	-webkit-transform: translateX($x)
+	-moz-transform: translateX($x)
+	-ms-transform: translateX($x)
+
 .choice
 	font-size: 3.4em
 	font-weight: bold
@@ -45,12 +51,12 @@ $losing-animation-delay: $death-style-animation-delay + $result-animation-durati
 
 @keyframes from-left
 	0%
-		transform: translateX(-200%)
+		+result-transform(-200%)
 	100%
-		transform: translateX(0)
+		+result-transform(0)
 
 @keyframes from-right
 	0%
-		transform: translateX(200%)
+		+result-transform(200%)
 	100%
-		transform: translateX(0)
+		+result-transform(0)
